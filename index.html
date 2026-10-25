@@ -184,11 +184,11 @@ function draw(){
  const container=$('#notation');container.innerHTML='';
  const renderer=new VF.Renderer(container,VF.Renderer.Backends.SVG);
  const mobile=window.innerWidth<=560;
- renderer.resize(mobile?440:680,mobile?305:340);
+ renderer.resize(mobile?365:680,mobile?305:340);
  const ctx=renderer.getContext();
  const staves={};
  for(const clef of ['treble','bass']){
-  const stave=new VF.Stave(mobile?38:60,clef==='treble'?(mobile?38:65):(mobile?165:200),mobile?365:565);
+  const stave=new VF.Stave(mobile?23:60,clef==='treble'?(mobile?38:65):(mobile?165:200),mobile?305:565);
   stave.addClef(clef).addKeySignature(VEX_KEYS[config.key]);
   stave.setContext(ctx).draw();staves[clef]=stave;
  }
@@ -199,7 +199,7 @@ function draw(){
   // Format with a fixed minimum space after the key signature.
   const voice=new VF.Voice({num_beats:notes.length,beat_value:4});voice.addTickables(notes);
   new VF.Formatter().joinVoices([voice]).format([voice],item.sequential?215:160);
-  const base=stave.getNoteStartX()+(mobile?36:70);
+  const base=stave.getNoteStartX()+(mobile?13:70);
   const offset=base-notes[0].getAbsoluteX();
   for(const n of notes){n.setStave(stave);n.setContext(ctx);n.setXShift(offset);n.draw()}
  }
