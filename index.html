@@ -218,3 +218,7 @@ $('#defaults').addEventListener('click',()=>{setControls(DEFAULT);$('#settingsEr
 $('#start').addEventListener('click',()=>{const c=readControls(),error=validate(c);$('#settingsError').textContent=error;if(error)return;config=c;persist();newSession();toggleSettings(false)});
 if(validate(config))config={...DEFAULT};setControls(config);newSession();
 })();</script></body></html>
+<style>
+/* Version 28: persistent, high-contrast selection state */
+.choices button.selected,.choices button.selected:hover,.choices button.selected:disabled{background:#b99a5b!important;border:2px solid #f1d79c!important;color:#101820!important;box-shadow:0 0 0 2px #f1d79c55,inset 0 1px 2px #0002!important;font-weight:800;opacity:1!important}
+</style>
