@@ -1,8 +1,121 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Visual Interval Trainer</title><style>
-:root{font-family:system-ui,-apple-system,sans-serif;color:#17283f;background:#f4f7fb}*{box-sizing:border-box}body{margin:0}header{background:#17283f;color:white;text-align:center;padding:17px;font-size:22px;font-weight:650}.wrap{max-width:840px;margin:auto;padding:14px}.panel{background:white;border:1px solid #d8e0eb;border-radius:13px;padding:15px;margin:11px 0}.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.muted{color:#52667b;font-size:14px}.small{font-size:13px}.stats{font-variant-numeric:tabular-nums}#notation svg{width:100%;height:auto;display:block}button,select,input{font:inherit}button{background:#1769d2;color:white;border:1px solid #1256ae;border-radius:9px;padding:11px;cursor:pointer;font-weight:650}button:hover{background:#1057b2}button:disabled{opacity:1;cursor:default}button.selected{background:#0d458f}h2{text-align:center;font-size:20px;margin:0 0 2px}#practice-feedback{text-align:center;font-size:24px;font-weight:650;min-height:0;line-height:1.25;margin:0 0 5px}.answer-feedback{text-align:center;font-size:24px;font-weight:650;line-height:1.25;min-height:30px;margin:0 0 4px}.answer-feedback:empty{visibility:hidden}.correct{color:#137747}.incorrect{color:#a12e35}.settings{display:none}.settings.open{display:block}fieldset{border:1px solid #d8e0e9;border-radius:10px;margin:12px 0;padding:12px}legend{font-weight:650}label{display:block;margin:9px 0}select{padding:8px;border:1px solid #a9b8c9;border-radius:7px;max-width:100%}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.error{color:#a12e35}.answer-group{border-top:1px solid #e4e9f0;padding:10px 0}.answer-group:first-child{border-top:0}.answer-row{display:flex;gap:8px;align-items:stretch}.answer-set{flex:1;min-width:0}.answer-set-title{font-size:13px;color:#52667b;font-weight:650;margin:0 0 5px}.answer-sets{display:flex;gap:10px;flex:1;min-width:0}.choices{display:flex;flex-wrap:wrap;gap:5px}.choices button{flex:1 0 38px;min-width:38px;padding:10px 3px;font-size:16px}.next-inline{display:block;width:210px;max-width:100%;margin:14px auto 2px;white-space:nowrap}.answer-row{display:block}.group-note{font-size:13px;color:#52667b;margin:0 0 6px}.settings-actions{display:flex;justify-content:space-between;gap:10px}.settings-actions button{flex:1}#settingsToggle{min-width:180px;text-align:center}.hide{display:none!important}#sessionDone{text-align:center;font-weight:650;padding:10px} @media(max-width:560px){.wrap{padding:9px}.panel{padding:10px}.two{grid-template-columns:1fr}.answer-sets{gap:5px}.choices{gap:3px}.choices button{min-width:32px;flex-basis:32px;font-size:14px;padding:9px 2px}.next-inline{width:210px;padding:11px;font-size:16px}.answer-row{gap:5px}header{font-size:19px}}
-</style></head><body><header>Visual Interval Trainer</header><main class="wrap"><div class="panel bar"><div><strong id="activeKey">C major</strong><div id="activeIntervals" class="muted"></div></div><button id="settingsToggle">Settings</button></div>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#17283f;background:#f4f7fb}*{box-sizing:border-box}body{margin:0}header{background:#1769d2;color:white;text-align:center;padding:17px;font-size:22px;font-weight:650}.wrap{max-width:840px;margin:auto;padding:14px}.panel{background:white;border:1px solid #d8e0eb;border-radius:13px;padding:15px;margin:11px 0}.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.muted{color:#52667b;font-size:14px}.small{font-size:13px}.stats{font-variant-numeric:tabular-nums}#notation svg{width:100%;height:auto;display:block}button,select,input{font:inherit}button{background:#1769d2;color:white;border:1px solid #1256ae;border-radius:9px;padding:11px;cursor:pointer;font-weight:650}button:hover{background:#1057b2}button:disabled{opacity:1;cursor:default}button.selected{background:#0d458f}h2{text-align:center;font-size:20px;margin:0 0 2px}#practice-feedback{text-align:center;font-size:24px;font-weight:650;min-height:0;line-height:1.25;margin:0 0 5px}.answer-feedback{text-align:center;font-size:24px;font-weight:650;line-height:1.25;min-height:30px;margin:0 0 4px}.answer-feedback:empty{visibility:hidden}.correct{color:#137747}.incorrect{color:#a12e35}.settings{display:none}.settings.open{display:block}fieldset{border:1px solid #d8e0e9;border-radius:10px;margin:12px 0;padding:12px}legend{font-weight:650}label{display:block;margin:9px 0}select{padding:8px;border:1px solid #a9b8c9;border-radius:7px;max-width:100%}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.error{color:#a12e35}.answer-group{border-top:1px solid #e4e9f0;padding:10px 0}.answer-group:first-child{border-top:0}.answer-row{display:flex;gap:8px;align-items:stretch}.answer-set{flex:1;min-width:0}.answer-set-title{font-size:13px;color:#52667b;font-weight:650;margin:0 0 5px}.answer-sets{display:flex;gap:10px;flex:1;min-width:0}.choices{display:flex;flex-wrap:wrap;gap:5px}.choices button{flex:1 0 38px;min-width:38px;padding:10px 3px;font-size:16px}.next-inline{display:block;width:210px;max-width:100%;margin:14px auto 2px;white-space:nowrap}.answer-row{display:block}.group-note{font-size:13px;color:#52667b;margin:0 0 6px}.settings-actions{display:flex;justify-content:space-between;gap:10px}.settings-actions button{flex:1}#settingsToggle{min-width:180px;text-align:center}.hide{display:none!important}#sessionDone{text-align:center;font-weight:650;padding:10px} @media(max-width:560px){.wrap{padding:9px}.panel{padding:10px}.two{grid-template-columns:1fr}.answer-sets{gap:5px}.choices{gap:3px}.choices button{min-width:32px;flex-basis:32px;font-size:14px;padding:9px 2px}.next-inline{width:210px;padding:11px;font-size:16px}.answer-row{gap:5px}header{font-size:20px}}
+
+/* v22: phone-focused exercise layout */
+.wrap{display:flex;flex-direction:column}
+.wrap > .bar:not(#bottomSummary){order:0}
+.wrap > section.panel:not(#settings):not(#practice){order:1}
+#practice{order:2}
+#bottomSummary{order:3;display:block;padding:10px 14px}
+#settings{order:4}
+.exercise-actions{display:flex;gap:12px;align-items:stretch;justify-content:center;margin:18px auto 4px;max-width:480px}
+.exercise-actions #settingsToggle{min-width:0;flex:0 0 36%;margin:0}
+.exercise-actions #next{flex:1;width:auto;max-width:none;margin:0}
+.answer-sets:has(.answer-set:nth-child(2)){gap:20px}
+.answer-sets:has(.answer-set:nth-child(2)) .answer-set:nth-child(2){border-left:1px solid #b8c6d8;padding-left:20px}
+.answer-set-title{margin:0 0 7px}
+.answer-feedback{min-height:24px;margin:0 0 2px}
+#notation{display:flex;justify-content:center}
+#notation svg{max-width:100%}
+@media(max-width:560px){
+ .wrap{gap:10px}
+ #practice{padding:12px 10px}
+ #practice h2{margin-bottom:12px}
+ #notation{margin:-8px auto}
+ .answer-sets:has(.answer-set:nth-child(2)){gap:12px}
+ .answer-sets:has(.answer-set:nth-child(2)) .answer-set:nth-child(2){padding-left:12px}
+ .answer-set-title{font-size:14px;margin-bottom:7px}
+ .answer-feedback{min-height:22px;font-size:17px}
+ .answer-feedback:empty{display:none}
+ .choices{gap:4px}
+ .choices button{min-width:0;flex-basis:0;padding:10px 2px;font-size:15px}
+ .exercise-actions{gap:10px;margin-top:16px}
+ .exercise-actions #settingsToggle{font-size:16px;padding:10px 4px}
+ .exercise-actions #next{font-size:17px;padding:10px 4px}
+ #bottomSummary strong{font-size:16px}
+ #bottomSummary .muted{font-size:13px}
+}
+
+/* Version 25 — Modern Conservatory visual system */
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#203047;background:#f5f2eb;--ink:#203047;--navy:#183c61;--blue:#235b90;--border:#e0e1df;--muted:#667587}
+body{background:linear-gradient(180deg,#f2efe8 0%,#f8f6f1 46%,#f5f2eb 100%);min-height:100vh}
+header{background:#183c61;color:#fdfbf6;font-family:Georgia,"Times New Roman",serif;font-size:25px;font-weight:600;letter-spacing:.15px;line-height:1.2;padding:21px 14px 19px;border-bottom:3px solid #b8a47c;box-shadow:0 3px 14px #1c354a18}
+.wrap{max-width:790px;padding:15px 16px 32px;gap:11px}
+.panel{background:#fff;border:1px solid #e4e4e1;border-radius:12px;box-shadow:0 3px 13px #26374b09;margin:3px 0;padding:17px}
+.wrap > .bar:not(#bottomSummary){padding:1px 7px 0;color:#607084;font-size:13px;font-weight:600;letter-spacing:.02em}
+#question{color:#354a60}#score{color:#6c7c8b}
+#notation{background:#fff}#notation svg{max-width:100%}
+#practice{padding:18px 17px 17px}
+#practice h2{font-family:Georgia,"Times New Roman",serif;font-size:22px;font-weight:600;color:#223a51;letter-spacing:.1px;margin:0 0 13px}
+button{background:#235b90;border:1px solid #1b4b79;color:#fff;border-radius:7px;font-weight:600;box-shadow:0 1px 2px #173e6320;transition:background-color .15s,border-color .15s}
+button:hover{background:#1b4b79}button.selected{background:#163a5e;border-color:#163a5e;box-shadow:inset 0 1px 3px #0b233d35}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #b8a47c;outline-offset:2px}
+.choices button{border-radius:7px;padding-top:11px;padding-bottom:11px}
+.answer-set-title{color:#667587;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.answer-sets:has(.answer-set:nth-child(2)) .answer-set:nth-child(2){border-left-color:#d8dfe5}
+.answer-group{border-top-color:#e6e9eb}
+.exercise-actions{margin-top:20px;gap:10px}
+.exercise-actions #settingsToggle{background:#eaf0f5;border:1px solid #c9d6e2;color:#234c70;box-shadow:none}
+.exercise-actions #settingsToggle:hover{background:#dfe9f1}
+.exercise-actions #next{background:#235b90}
+#bottomSummary{background:#eeede8;border:1px solid #e2e0d9;box-shadow:none;padding:13px 15px}
+.summary-label{display:block;font-size:10px;font-weight:750;letter-spacing:.13em;color:#7a807f;text-transform:uppercase;margin-bottom:10px}
+.summary-chips{display:flex;flex-wrap:wrap;gap:7px}
+.summary-chip{background:#fff;border:1px solid #dedfdf;color:#354c60;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:600;line-height:1.3}
+#bottomSummary #activeKey{font-size:12px}
+#bottomSummary #activeIntervals{display:contents}
+.settings{background:#fff}#settings h2{font-family:Georgia,"Times New Roman",serif;color:#223a51}
+fieldset{border-color:#e0e3e4}select{border-color:#c4cdd5;background:#fff;color:#24394c}
+@media(max-width:560px){
+ header{font-size:23px;padding:18px 10px 17px}
+ .wrap{padding:10px 11px 25px;gap:9px}
+ .panel{border-radius:10px;padding:12px;margin:2px 0}
+ #practice{padding:14px 11px 14px}
+ #practice h2{font-size:21px;margin-bottom:11px}
+ .choices button{font-size:14px;padding:10px 2px}
+ .answer-set-title{font-size:11px;letter-spacing:.025em}
+ .exercise-actions{margin-top:16px}
+ #bottomSummary{padding:12px 13px}
+ .summary-chip{font-size:11px;padding:6px 8px}
+}
+
+/* Version 26 — dark conservatory */
+:root{color-scheme:dark;--ink:#e8e7e1;--navy:#111a24;--blue:#315b80;--border:#36424e;--muted:#a8b5c1;color:#e8e7e1;background:#101419}
+body{background:linear-gradient(165deg,#0e1217 0%,#1a232c 52%,#11171e 100%);color:#e8e7e1}
+header{background:linear-gradient(120deg,#0a1016,#182534);color:#f3efe5;border-bottom:2px solid #aa956f;box-shadow:0 5px 22px #0006}
+.wrap > .bar:not(#bottomSummary){color:#aebdcc}
+#question{color:#d5e0e8}#score{color:#b6c4d0}
+.panel{background:#1d2731;border:1px solid #34414d;box-shadow:0 6px 24px #0003}
+/* The music itself stays black on white. */
+.panel:has(> #notation){background:#fff;border-color:#e4e4e4;padding:12px 8px;box-shadow:0 5px 20px #0004}
+#notation{background:#fff;color:#111}
+#practice{background:#202b36;border-color:#384957}
+#practice h2{color:#f0e9db}
+button{background:#315f89;border-color:#4879a3;color:#fff;box-shadow:0 2px 5px #0003}
+button:hover{background:#4077a7}
+button.selected{background:#8b7650;border-color:#c1a978;color:#fff}
+.choices button{background:#315f89;border-color:#537da0}
+.choices button:hover{background:#4077a7}
+.answer-set-title{color:#bdc9d4}
+.answer-sets:has(.answer-set:nth-child(2)) .answer-set:nth-child(2){border-left-color:#5b6976}
+.answer-group{border-top-color:#46535f}
+.exercise-actions #settingsToggle{background:#2c3844;border:1px solid #637484;color:#e8eff6}
+.exercise-actions #settingsToggle:hover{background:#3a4a58}
+.exercise-actions #next{background:#315f89}
+#bottomSummary{background:#1b252f;border:1px solid #364451;box-shadow:0 3px 12px #0002}
+.summary-label{color:#c2ad84}
+.summary-chip{background:#293643;border:1px solid #4a5967;color:#e2eaf0}
+#bottomSummary #activeKey{color:#f2dfb8;border-color:#887653}
+#settings{background:#202b36;color:#e8e7e1}
+#settings h2{color:#f0e9db}
+fieldset{border-color:#4a5967}
+select{background:#2b3946;border-color:#617282;color:#f4f5f6}
+label,legend{color:#e2e7ed}
+.muted,.small{color:#b8c4cf}
+@media(max-width:560px){.panel:has(> #notation){padding:9px 3px}.choices button{font-size:14px}}
+</style></head><body><header>Visual Interval Trainer</header><main class="wrap"><button id="settingsToggle" class="hide">Settings</button><div class="panel" id="bottomSummary"><span class="summary-label">Current exercise</span><div class="summary-chips"><strong class="summary-chip" id="activeKey">C major</strong><div id="activeIntervals" class="summary-chips"></div></div></div>
 <section id="settings" class="panel settings"><h2>Practice Settings</h2><fieldset><legend>Exercise type</legend><label><input type="radio" name="exercise" value="pairs"> Two-note intervals</label><label><input type="radio" name="exercise" value="chords"> Three-note interval combinations</label><label><input type="radio" name="exercise" value="mixed"> Mix both exercise types</label></fieldset><fieldset><legend>Staff presentation</legend><label><input type="radio" name="mode" value="random"> Treble or bass, randomly</label><label><input type="radio" name="mode" value="treble"> Treble only</label><label><input type="radio" name="mode" value="bass"> Bass only</label><label><input type="radio" name="mode" value="both"> Both clefs simultaneously (one shared harmony)</label></fieldset><fieldset><legend>Note presentation</legend><label><input type="checkbox" id="sequential"> Include sequential two-note intervals</label><p class="muted small">Three-note combinations appear stacked on one stem. In both-clef mode, the other staff shows a two-note interval from the same harmony.</p></fieldset><fieldset><legend>Musical harmony</legend><label><input type="radio" name="harmony" value="diatonic"> Diatonic chords only</label><label><input type="radio" name="harmony" value="extended"> Include seventh and extended chords</label><label><input type="radio" name="harmony" value="chromatic"> Include augmented, diminished and altered chords</label></fieldset><label>Key signature <select id="key"></select></label><fieldset><legend>Two-note intervals (select at least one)</legend><div id="intervalChecks" class="two"></div></fieldset><fieldset><legend>Note ranges (inclusive)</legend><div class="two"><div><strong>Treble</strong><label>Lowest <select id="trebleLow"></select></label><label>Highest <select id="trebleHigh"></select></label></div><div><strong>Bass</strong><label>Lowest <select id="bassLow"></select></label><label>Highest <select id="bassHigh"></select></label></div></div></fieldset><label>Questions per session <select id="length"><option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="50">50</option><option value="0">Unlimited</option></select></label><p id="settingsError" class="error" role="alert"></p><div class="settings-actions"><button id="defaults">Reset to Defaults</button><button id="start">Start New Session</button></div><p class="muted small">Changing Settings and selecting Close Settings starts a new session automatically. Unanswered items can be skipped with Next.</p></section>
-<div class="bar"><span id="question"></span><span class="stats" id="score"></span></div><section class="panel"><div id="notation" role="img" aria-label="Grand staff with intervals"></div></section><section class="panel" id="practice"><h2>Identify the Interval</h2><div id="practice-feedback" aria-live="polite"></div><div id="answerGroups"></div><div id="sessionDone" class="hide"></div><p class="muted small" style="text-align:center">Both staves remain visible. No audio.</p></section></main>
+<div class="bar"><span id="question"></span><span class="stats" id="score"></span></div><section class="panel"><div id="notation" role="img" aria-label="Grand staff with intervals"></div></section><section class="panel" id="practice"><h2>Identify the Interval</h2><div id="practice-feedback" aria-live="polite"></div><div id="answerGroups"></div><div id="sessionDone" class="hide"></div></section></main>
 <script>/*!
  * VexFlow 4.2.6   2024-08-26T20:16:17.134Z   103aad2b14837418c5e96c9e078edd036fcddf60
  * Copyright (c) 2010 Mohit Muthanna Cheppudira <mohit@muthanna.com>
@@ -70,11 +183,12 @@ const VEX_KEYS={0:'C',1:'G',2:'D',3:'A',4:'E',5:'B',6:'F#',7:'C#',[-1]:'F',[-2]:
 function draw(){
  const container=$('#notation');container.innerHTML='';
  const renderer=new VF.Renderer(container,VF.Renderer.Backends.SVG);
- renderer.resize(680,340);
+ const mobile=window.innerWidth<=560;
+ renderer.resize(mobile?440:680,mobile?305:340);
  const ctx=renderer.getContext();
  const staves={};
  for(const clef of ['treble','bass']){
-  const stave=new VF.Stave(60,clef==='treble'?65:200,565);
+  const stave=new VF.Stave(mobile?38:60,clef==='treble'?(mobile?38:65):(mobile?165:200),mobile?365:565);
   stave.addClef(clef).addKeySignature(VEX_KEYS[config.key]);
   stave.setContext(ctx).draw();staves[clef]=stave;
  }
@@ -85,7 +199,7 @@ function draw(){
   // Format with a fixed minimum space after the key signature.
   const voice=new VF.Voice({num_beats:notes.length,beat_value:4});voice.addTickables(notes);
   new VF.Formatter().joinVoices([voice]).format([voice],item.sequential?215:160);
-  const base=stave.getNoteStartX()+70;
+  const base=stave.getNoteStartX()+(mobile?36:70);
   const offset=base-notes[0].getAbsoluteX();
   for(const n of notes){n.setStave(stave);n.setContext(ctx);n.setXShift(offset);n.draw()}
  }
@@ -93,10 +207,10 @@ function draw(){
 }
 function updateScore(){$('#score').textContent=`Score: ${correct}/${attempts} (${attempts?Math.round(correct*100/attempts):0}%)`}
 function answer(item,index,n,button){if(item.answered[index]||ended)return;item.answered[index]=true;attempts++;const ok=n===item.answers[index];if(ok)correct++;const set=button.closest('.answer-set');set.querySelectorAll('button').forEach(b=>{b.disabled=true;if(b===button)b.classList.add('selected')});const feedback=set.querySelector('.answer-feedback');feedback.textContent=ok?'Correct!':`Incorrect — ${item.answers[index]}${suffix(item.answers[index])}.`;feedback.className='answer-feedback '+(ok?'correct':'incorrect');updateScore();if(current.every(it=>it.answered.every(Boolean))&&config.length&&question>=config.length)$('#next').textContent='Finish Session'}
-function renderAnswers(){const root=$('#answerGroups');root.innerHTML='';current.forEach((item,i)=>{const group=document.createElement('div');group.className='answer-group';const row=document.createElement('div');row.className='answer-row';const sets=document.createElement('div');sets.className='answer-sets';item.answers.forEach((ans,k)=>{const set=document.createElement('div');set.className='answer-set';if(item.answers.length===2){const label=document.createElement('div');label.className='answer-set-title';label.textContent=k===0?'Lower interval':'Upper interval';set.append(label)}const feedback=document.createElement('div');feedback.className='answer-feedback';feedback.setAttribute('aria-live','polite');set.append(feedback);const choices=document.createElement('div');choices.className='choices';const nums=item.type==='pairs'?config.intervals:[3,4,5];for(let n of nums){const b=document.createElement('button');b.textContent=n+suffix(n);b.addEventListener('click',()=>answer(item,k,n,b));choices.append(b)}set.append(choices);sets.append(set)});row.append(sets);group.append(row);root.append(group)});const next=document.createElement('button');next.id='next';next.className='next-inline';next.textContent=config.length&&question===config.length?'Finish Session':'Next →';next.addEventListener('click',advanceQuestion);root.append(next)}
+function renderAnswers(){const root=$('#answerGroups');const persistentSettings=$('#settingsToggle');root.innerHTML='';current.forEach((item,i)=>{const group=document.createElement('div');group.className='answer-group';const row=document.createElement('div');row.className='answer-row';const sets=document.createElement('div');sets.className='answer-sets';item.answers.forEach((ans,k)=>{const set=document.createElement('div');set.className='answer-set';if(item.answers.length===2){const label=document.createElement('div');label.className='answer-set-title';label.textContent=k===0?'Lower interval':'Upper interval';set.append(label)}const feedback=document.createElement('div');feedback.className='answer-feedback';feedback.setAttribute('aria-live','polite');set.append(feedback);const choices=document.createElement('div');choices.className='choices';const nums=item.type==='pairs'?config.intervals:[3,4,5];for(let n of nums){const b=document.createElement('button');b.textContent=n+suffix(n);b.addEventListener('click',()=>answer(item,k,n,b));choices.append(b)}set.append(choices);sets.append(set)});row.append(sets);group.append(row);root.append(group)});const actions=document.createElement('div');actions.className='exercise-actions';const settingsButton=persistentSettings;settingsButton.classList.remove('hide');actions.append(settingsButton);const next=document.createElement('button');next.id='next';next.className='next-inline';next.textContent=config.length&&question===config.length?'Finish Session':'Next →';next.addEventListener('click',advanceQuestion);actions.append(next);root.append(actions)}
 function advanceQuestion(){if(ended)return;$('#practice-feedback').textContent='';$('#practice-feedback').className='';if(config.length&&question>=config.length){finish();return}try{current=generate()}catch(e){$('#practice-feedback').textContent=e.message;$('#practice-feedback').className='incorrect';return}question++;$('#question').textContent=`Question ${question}${config.length?' of '+config.length:''}`;draw();renderAnswers()}
 function finish(){ended=true;$('#answerGroups').innerHTML='';$('#sessionDone').classList.remove('hide');$('#sessionDone').textContent=`Session complete — ${correct} correct out of ${attempts} (${attempts?Math.round(correct*100/attempts):0}%). Start a new session in Settings.`}
-function updateActive(){$('#activeKey').textContent=KEYS.find(k=>k[1]===config.key)[0];$('#activeIntervals').textContent=(config.exercise==='pairs'?'Two-note':config.exercise==='chords'?'Three-note':'Mixed')+' · '+(config.mode==='both'?'Both clefs':config.mode==='random'?'Random clef':config.mode==='treble'?'Treble':'Bass')+' · '+config.intervals.map(n=>n+suffix(n)).join(', ')}
+function updateActive(){$('#activeKey').textContent=KEYS.find(k=>k[1]===config.key)[0];const details=[config.exercise==='pairs'?'Two-note':config.exercise==='chords'?'Three-note':'Mixed',config.mode==='both'?'Both clefs':config.mode==='random'?'Random clef':config.mode==='treble'?'Treble':'Bass',config.intervals.map(n=>n+suffix(n)).join(', ')];const holder=$('#activeIntervals');holder.replaceChildren(...details.map(value=>{const chip=document.createElement('span');chip.className='summary-chip';chip.textContent=value;return chip}))}
 function newSession(){attempts=0;correct=0;question=0;ended=false;presentationCount={treble:0,bass:0};threeNoteClefCount=0;$('#sessionDone').classList.add('hide');updateScore();updateActive();advanceQuestion()}
 function toggleSettings(open){$('#settings').classList.toggle('open',open);$('#settingsToggle').textContent=open?'Close Settings':'Settings';$('#settingsToggle').setAttribute('aria-expanded',String(open))}
 $('#settingsToggle').addEventListener('click',()=>{if(!$('#settings').classList.contains('open')){toggleSettings(true);return}const c=readControls(),error=validate(c);$('#settingsError').textContent=error;if(error)return;const changed=JSON.stringify(c)!==JSON.stringify(config);config=c;persist();if(changed)newSession();toggleSettings(false)});
