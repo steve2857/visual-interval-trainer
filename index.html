@@ -113,8 +113,20 @@ select{background:#2b3946;border-color:#617282;color:#f4f5f6}
 label,legend{color:#e2e7ed}
 .muted,.small{color:#b8c4cf}
 @media(max-width:560px){.panel:has(> #notation){padding:9px 3px}.choices button{font-size:14px}}
+
+/* Version 31: reserve feedback space to prevent layout shifts on grading. */
+#practice-feedback{height:0;min-height:0;margin:0;overflow:hidden}
+.answer-feedback,.answer-feedback:empty{display:flex;align-items:center;justify-content:center;box-sizing:border-box;height:25px;min-height:25px;margin:0 0 3px;visibility:visible;white-space:nowrap;font-size:17px;line-height:1.15}
+.answer-feedback:empty{visibility:hidden}
+@media(max-width:560px){
+ #practice h2{margin-bottom:5px}
+ .answer-set-title{margin-bottom:3px}
+ .answer-feedback,.answer-feedback:empty{height:23px;min-height:23px;margin-bottom:2px;font-size:16px}
+ .answer-group{padding:7px 0}
+ .exercise-actions{margin-top:10px}
+}
 </style></head><body><header>Visual Interval Trainer</header><main class="wrap"><button id="settingsToggle" class="hide">Settings</button><div class="panel" id="bottomSummary"><span class="summary-label">Current exercise</span><div class="summary-chips"><strong class="summary-chip" id="activeKey">C major</strong><div id="activeIntervals" class="summary-chips"></div></div></div>
-<section id="settings" class="panel settings"><h2>Practice Settings</h2><fieldset><legend>Exercise type</legend><label><input type="radio" name="exercise" value="pairs"> Two-note intervals</label><label><input type="radio" name="exercise" value="chords"> Three-note interval combinations</label><label><input type="radio" name="exercise" value="mixed"> Mix both exercise types</label></fieldset><fieldset><legend>Staff presentation</legend><label><input type="radio" name="mode" value="random"> Treble or bass, randomly</label><label><input type="radio" name="mode" value="treble"> Treble only</label><label><input type="radio" name="mode" value="bass"> Bass only</label><label><input type="radio" name="mode" value="both"> Both clefs simultaneously (one shared harmony)</label></fieldset><fieldset><legend>Note presentation</legend><label><input type="checkbox" id="sequential"> Include sequential two-note intervals</label><p class="muted small">Three-note combinations appear stacked on one stem. In both-clef mode, the other staff shows a two-note interval from the same harmony.</p></fieldset><fieldset><legend>Musical harmony</legend><label><input type="radio" name="harmony" value="diatonic"> Diatonic chords only</label><label><input type="radio" name="harmony" value="extended"> Include seventh and extended chords</label><label><input type="radio" name="harmony" value="chromatic"> Include augmented, diminished and altered chords</label></fieldset><label>Key signature <select id="key"></select></label><fieldset><legend>Two-note intervals (select at least one)</legend><div id="intervalChecks" class="two"></div></fieldset><fieldset><legend>Note ranges (inclusive)</legend><div class="two"><div><strong>Treble</strong><label>Lowest <select id="trebleLow"></select></label><label>Highest <select id="trebleHigh"></select></label></div><div><strong>Bass</strong><label>Lowest <select id="bassLow"></select></label><label>Highest <select id="bassHigh"></select></label></div></div></fieldset><label>Questions per session <select id="length"><option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="50">50</option><option value="0">Unlimited</option></select></label><p id="settingsError" class="error" role="alert"></p><div class="settings-actions"><button id="defaults">Reset to Defaults</button><button id="start">Start New Session</button></div><p class="muted small">Changing Settings and selecting Close Settings starts a new session automatically. Unanswered items can be skipped with Next.</p></section>
+<section id="settings" class="panel settings"><h2>Practice Settings</h2><fieldset><legend>Exercise type</legend><label><input type="radio" name="exercise" value="pairs"> Two-note intervals</label><label><input type="radio" name="exercise" value="chords"> Three-note interval combinations</label><label><input type="radio" name="exercise" value="mixed"> Mix both exercise types</label></fieldset><fieldset><legend>Staff presentation</legend><label><input type="radio" name="mode" value="random"> Treble or bass, randomly</label><label><input type="radio" name="mode" value="treble"> Treble only</label><label><input type="radio" name="mode" value="bass"> Bass only</label><label><input type="radio" name="mode" value="both"> Both clefs simultaneously (one shared harmony)</label></fieldset><fieldset><legend>Note presentation</legend><label><input type="checkbox" id="sequential"> Include sequential two-note intervals</label><p class="muted small">Three-note combinations appear stacked on one stem. In both-clef mode, the other staff shows a two-note interval from the same harmony.</p></fieldset><fieldset><legend>Musical harmony</legend><label><input type="radio" name="harmony" value="diatonic"> Diatonic chords only</label><label><input type="radio" name="harmony" value="extended"> Include seventh and extended chords</label><label><input type="radio" name="harmony" value="chromatic"> Include augmented, diminished and altered chords</label></fieldset><label>Key signature <select id="key"></select></label><fieldset><legend>Two-note intervals (select at least one)</legend><div id="intervalChecks" class="two"></div></fieldset><fieldset><legend>Note ranges (inclusive)</legend><div class="two"><div><strong>Treble</strong><label>Lowest <select id="trebleLow"></select></label><label>Highest <select id="trebleHigh"></select></label></div><div><strong>Bass</strong><label>Lowest <select id="bassLow"></select></label><label>Highest <select id="bassHigh"></select></label></div></div></fieldset><label>Questions per session <select id="length"><option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="50">50</option><option value="0">Unlimited</option></select></label><p id="settingsError" class="error" role="alert"></p><div class="settings-actions"><button id="defaults">Reset to Defaults</button><button id="start">New Session</button></div><p class="muted small">Changing Settings and selecting Close Settings starts a new session automatically. Unanswered items can be skipped with Next.</p></section>
 <div class="bar"><span id="question"></span><span class="stats" id="score"></span></div><section class="panel"><div id="notation" role="img" aria-label="Grand staff with intervals"></div></section><section class="panel" id="practice"><h2>Identify the Interval</h2><div id="practice-feedback" aria-live="polite"></div><div id="answerGroups"></div><div id="sessionDone" class="hide"></div></section></main>
 <script>/*!
  * VexFlow 4.2.6   2024-08-26T20:16:17.134Z   103aad2b14837418c5e96c9e078edd036fcddf60
@@ -206,10 +218,31 @@ function draw(){
  const svg=container.querySelector('svg');if(svg){svg.setAttribute('role','img');svg.setAttribute('aria-label','Grand staff with professionally engraved key signatures and intervals');svg.style.width='100%';svg.style.height='auto'}
 }
 function updateScore(){$('#score').textContent=`Score: ${correct}/${attempts} (${attempts?Math.round(correct*100/attempts):0}%)`}
-function answer(item,index,n,button){if(item.answered[index]||ended)return;item.answered[index]=true;attempts++;const ok=n===item.answers[index];if(ok)correct++;const set=button.closest('.answer-set');set.querySelectorAll('button').forEach(b=>{b.disabled=true;if(b===button)b.classList.add('selected')});const feedback=set.querySelector('.answer-feedback');feedback.textContent=ok?'Correct!':`Incorrect — ${item.answers[index]}${suffix(item.answers[index])}.`;feedback.className='answer-feedback '+(ok?'correct':'incorrect');updateScore();if(current.every(it=>it.answered.every(Boolean))&&config.length&&question>=config.length)$('#next').textContent='Finish Session'}
+function answer(item,index,n,button){if(item.answered[index]||ended)return;item.answered[index]=true;attempts++;const ok=n===item.answers[index];if(ok)correct++;const set=button.closest('.answer-set');set.querySelectorAll('button').forEach(b=>{b.disabled=true;if(b===button)b.classList.add('selected')});const feedback=set.querySelector('.answer-feedback');feedback.textContent=ok?'Right!':`No — ${item.answers[index]}${suffix(item.answers[index])}`;feedback.className='answer-feedback '+(ok?'correct':'incorrect');updateScore();if(current.every(it=>it.answered.every(Boolean))&&config.length&&question>=config.length)$('#next').textContent='Finish Session'}
 function renderAnswers(){const root=$('#answerGroups');const persistentSettings=$('#settingsToggle');root.innerHTML='';current.forEach((item,i)=>{const group=document.createElement('div');group.className='answer-group';const row=document.createElement('div');row.className='answer-row';const sets=document.createElement('div');sets.className='answer-sets';item.answers.forEach((ans,k)=>{const set=document.createElement('div');set.className='answer-set';if(item.answers.length===2){const label=document.createElement('div');label.className='answer-set-title';label.textContent=k===0?'Lower interval':'Upper interval';set.append(label)}const feedback=document.createElement('div');feedback.className='answer-feedback';feedback.setAttribute('aria-live','polite');set.append(feedback);const choices=document.createElement('div');choices.className='choices';const nums=item.type==='pairs'?config.intervals:[3,4,5];for(let n of nums){const b=document.createElement('button');b.textContent=n+suffix(n);b.addEventListener('click',()=>answer(item,k,n,b));choices.append(b)}set.append(choices);sets.append(set)});row.append(sets);group.append(row);root.append(group)});const actions=document.createElement('div');actions.className='exercise-actions';const settingsButton=persistentSettings;settingsButton.classList.remove('hide');actions.append(settingsButton);const next=document.createElement('button');next.id='next';next.className='next-inline';next.textContent=config.length&&question===config.length?'Finish Session':'Next →';next.addEventListener('click',advanceQuestion);actions.append(next);root.append(actions)}
 function advanceQuestion(){if(ended)return;$('#practice-feedback').textContent='';$('#practice-feedback').className='';if(config.length&&question>=config.length){finish();return}try{current=generate()}catch(e){$('#practice-feedback').textContent=e.message;$('#practice-feedback').className='incorrect';return}question++;$('#question').textContent=`Question ${question}${config.length?' of '+config.length:''}`;draw();renderAnswers()}
-function finish(){ended=true;$('#answerGroups').innerHTML='';$('#sessionDone').classList.remove('hide');$('#sessionDone').textContent=`Session complete — ${correct} correct out of ${attempts} (${attempts?Math.round(correct*100/attempts):0}%). Start a new session in Settings.`}
+function finish(){
+ ended=true;
+ const settingsButton=$('#settingsToggle');
+ $('#answerGroups').innerHTML='';
+ const done=$('#sessionDone');
+ done.classList.remove('hide');
+ done.innerHTML='';
+ const result=document.createElement('div');
+ result.className='session-result';
+ result.textContent=`Session complete — ${correct} correct out of ${attempts} (${attempts?Math.round(correct*100/attempts):0}%).`;
+ const actions=document.createElement('div');
+ actions.className='session-end-actions';
+ settingsButton.classList.remove('hide');
+ actions.append(settingsButton);
+ const restart=document.createElement('button');
+ restart.id='sessionRestart';
+ restart.textContent='New Session';
+ restart.addEventListener('click',()=>{toggleSettings(false);newSession()});
+ actions.append(restart);
+ done.append(result,actions);
+ $('#question').textContent='Session complete';
+} 
 function updateActive(){$('#activeKey').textContent=KEYS.find(k=>k[1]===config.key)[0];const details=[config.exercise==='pairs'?'Two-note':config.exercise==='chords'?'Three-note':'Mixed',config.mode==='both'?'Both clefs':config.mode==='random'?'Random clef':config.mode==='treble'?'Treble':'Bass',config.intervals.map(n=>n+suffix(n)).join(', ')];const holder=$('#activeIntervals');holder.replaceChildren(...details.map(value=>{const chip=document.createElement('span');chip.className='summary-chip';chip.textContent=value;return chip}))}
 function newSession(){attempts=0;correct=0;question=0;ended=false;presentationCount={treble:0,bass:0};threeNoteClefCount=0;$('#sessionDone').classList.add('hide');updateScore();updateActive();advanceQuestion()}
 function toggleSettings(open){$('#settings').classList.toggle('open',open);$('#settingsToggle').textContent=open?'Close Settings':'Settings';$('#settingsToggle').setAttribute('aria-expanded',String(open))}
@@ -221,4 +254,16 @@ if(validate(config))config={...DEFAULT};setControls(config);newSession();
 <style>
 /* Version 28: persistent, high-contrast selection state */
 .choices button.selected,.choices button.selected:hover,.choices button.selected:disabled{background:#ffffff!important;border:2px solid #ffffff!important;color:#14283e!important;box-shadow:0 0 0 2px #ffffff55,inset 0 1px 2px #0002!important;font-weight:800;opacity:1!important}
+</style>
+
+<style>
+/* Version 30 — completion actions above the current exercise strip */
+#sessionDone{padding:12px 0 4px}
+.session-result{font-size:18px;line-height:1.45;color:#f0e9db;margin:4px 0 22px}
+.session-end-actions{display:flex;align-items:stretch;gap:10px;margin:0 auto 6px;max-width:480px}
+.session-end-actions button{flex:1;min-width:0;margin:0;white-space:nowrap;font-size:16px;padding:12px 8px}
+.session-end-actions #settingsToggle{background:#2c3844;border:1px solid #637484;color:#e8eff6}
+.session-end-actions #sessionRestart{background:#315f89;border:1px solid #4879a3;color:#fff}
+#sessionDone:not(.hide) + *{margin-top:0}
+@media(max-width:560px){.session-result{font-size:17px;margin-bottom:22px}.session-end-actions{gap:9px}.session-end-actions button{font-size:15px;padding:11px 5px}}
 </style>
