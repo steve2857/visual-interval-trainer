@@ -160,7 +160,7 @@ function chords(){const scale=scaleSet(),out=[];for(let root=0;root<12;root++)fo
 const PATTERNS=new Set(['4,4','3,4','4,3','3,5','5,3','4,5','5,4']);
 function candidates(clef,chord,type){const lo=config[clef+'Low'],hi=config[clef+'High'],notes=[];for(let i=lo;i<=hi;i++)if(chord.pcs.has(mod(midi(i),12)))notes.push(i);const result=[];if(type==='pairs'){for(let a=0;a<notes.length;a++)for(let b=a+1;b<notes.length;b++){const d=notes[b]-notes[a]+1;if(config.intervals.includes(d))result.push({notes:[notes[a],notes[b]],answers:[d]})}}else{for(let a=0;a<notes.length;a++)for(let b=a+1;b<notes.length;b++)for(let c=b+1;c<notes.length;c++){const d1=notes[b]-notes[a]+1,d2=notes[c]-notes[b]+1;if(PATTERNS.has(d1+','+d2))result.push({notes:[notes[a],notes[b],notes[c]],answers:[d1,d2]})}}return result}
 let threeNoteClefCount=0;
-function generate(){
+function generate(practiceAnchors=null){
  const clefs=config.mode==='both'?['treble','bass']:config.mode==='random'?[rand(2)?'treble':'bass']:[config.mode];
  const preferred=config.exercise==='mixed'?(rand(2)?'pairs':'chords'):config.exercise;
  const allChords=chords();
@@ -171,9 +171,18 @@ function generate(){
   const threeClef=type==='chords'&&clefs.length===2?clefs[threeNoteClefCount%2]:null;
   for(let trial=0;trial<350;trial++){
    const chord=pick(allChords);
-   const groups=clefs.map(clef=>candidates(clef,chord,threeClef?(clef===threeClef?'chords':'pairs'):type));
+   const groups=clefs.map(clef=>{const options=candidates(clef,chord,threeClef?(clef===threeClef?'chords':'pairs'):type);if(!practiceAnchors)return options;const prior=practiceAnchors[clef];return prior===undefined?options:options.filter(c=>Math.abs(c.notes[0]-prior)<=config.kbMovement)});
    if(groups.some(g=>!g.length))continue;
-   const chosen=groups.map(g=>pick(g));
+   let chosen=groups.map(g=>pick(g));
+   if(practiceAnchors&&chosen.length===2){
+    // The left hand must end strictly below the right hand's starting note.
+    // Compare sounding pitches, not staff positions; equality is forbidden too.
+    const bassGroup=groups[clefs.indexOf('bass')],trebleGroup=groups[clefs.indexOf('treble')];
+    const validBass=bassGroup.filter(b=>trebleGroup.some(t=>midi(b.notes.at(-1))<midi(t.notes[0])));
+    if(!validBass.length)continue;
+    const b=pick(validBass),validTreble=trebleGroup.filter(t=>midi(b.notes.at(-1))<midi(t.notes[0]));
+    chosen=clefs.map(c=>c==='bass'?b:pick(validTreble));
+   }
    if(chosen.length===2){
     const distinct=new Set(chosen.flatMap(c=>c.notes.map(i=>mod(midi(i),12))));
     if(distinct.size<Math.min(3,chord.pcs.size)&&trial<240)continue;
@@ -252,7 +261,7 @@ $('#start').addEventListener('click',()=>{const c=readControls(),error=validate(
 
 let kbTimer=null,previousPractice=null,fixedPracticeInterval=null;
 function showModeSettings(){const isKb=$('input[name="training"]:checked')?.value==='keyboard';$('#recognitionSettings').classList.toggle('hide',isKb);$('#keyboardSettings').classList.toggle('hide',!isKb)}
-document.querySelectorAll('input[name="training"]').forEach(el=>el.addEventListener('change',showModeSettings));
+document.querySelectorAll('input[name="training"]').forEach(el=>el.addEventListener('change',()=>{if(el.checked&&el.value==='keyboard'){ $('#kbPreset').value='easy';$('#kbSeconds').value='5';$('#kbMovement').value='1';}showModeSettings()}));
 $('#kbPreset').addEventListener('change',()=>{const v=$('#kbPreset').value;const values={easy:[5,1],intermediate:[4,2],advanced:[3,4]};if(values[v]){[$('#kbSeconds').value,$('#kbMovement').value]=values[v]}});
 for(const id of ['kbSeconds','kbMovement'])$('#'+id).addEventListener('change',()=>$('#kbPreset').value='custom');
 function generatePractice(){
@@ -265,18 +274,12 @@ function generatePractice(){
  }
  let result=null;
  try{
-  for(let trial=0;trial<140;trial++){
-   const candidate=generate();
-   if(!previousPractice){result=candidate;break}
-   const acceptable=candidate.every(item=>{
-    const prior=previousPractice.find(p=>p.clef===item.clef);
-    return !prior||Math.abs(item.notes[0]-prior.notes[0])<=config.kbMovement;
-   });
-   if(acceptable){result=candidate;break}
-  }
+  // Constrain candidates BEFORE selection. Rejection after random generation
+  // frequently produced apparent jumps, particularly with both staves.
+  const anchors=previousPractice||{};
+  result=generate(anchors);
  }finally{Object.assign(config,saved)}
- if(!result)throw Error('Could not find the next interval within the selected movement limit. Try a wider note range or a larger movement limit.');
- previousPractice=result.map(item=>({clef:item.clef,notes:[...item.notes]}));
+ previousPractice={...(previousPractice||{})};for(const item of result)previousPractice[item.clef]=item.notes[0];
  return result;
 }
 function renderKeyboardControls(){
@@ -298,7 +301,7 @@ function scheduleKeyboardAdvance(){
  kbTimer=setTimeout(()=>{kbTimer=null;advanceQuestion()},seconds*1000);
 }
 
-if(validate(config))config={...DEFAULT};setControls(config);newSession();
+if(validate(config))config={...DEFAULT};if(config.training==='keyboard'&&config.kbPreset==='custom'&&+config.kbSeconds===5&&+config.kbMovement===1)config.kbPreset='easy';setControls(config);newSession();
 })();</script></body></html>
 <style>
 /* Version 28: persistent, high-contrast selection state */
